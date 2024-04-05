@@ -14,6 +14,7 @@ Playing with predefined problems. To run enter
 ```bash
 python -m pentomino
 ```
+<img width="500" alt="Screenshot Puzzle to be solved" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/20806250-3040-4c8c-ac62-7329fc90ddd7">
 
 Figure shows a 3D subplot of the actual puzzle problem.
 
@@ -33,6 +34,7 @@ Build new problems and solve them. Run with
 ```bash
 python -m pentomino --edit
 ```
+<img width="500" alt="Screenshot Editmode" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/3125270f-a2b0-4f61-b5fc-0880d6beae9e">
 
 The figure consists of two columns:
 
@@ -52,6 +54,9 @@ Once a problem is selected, enter **g** to start the solver.
 The solver is executed as a separate Python thread
 and can be interrupted with another press of **g**.
 
+<img width="500" alt="Screenshot Solver timed out" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/1a20c1f8-715c-40d6-a44c-84792563e7e6">
+
+
 Pressing **g** again to continue the solving process.
 
 The solver interrupts itself if
@@ -61,6 +66,9 @@ by pressing **+** or **-**.
 
 After a timeout, the thread can be continued with **g**.
 
+<img width="500" alt="Screenshot Solution found" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/5b05f658-8fc1-45b1-bc56-bb366733b5af">
+
+
 The sequence of stones gets randomised when starting the solver.
 Repeating a solver run will probably yield a new solution.
 
@@ -68,9 +76,7 @@ Repeating a solver run will probably yield a new solution.
 
 Pressing **s**-key saves the solution. 
 
-https://docs.python.org/3/library/shelve.html
-
-You save solutions in a Shelve Data Base named pentomino.db.
+You save solutions in a [Shelve Data Base](https://docs.python.org/3/library/shelve.html) named pentomino.db.
 The default location is your home directory and can be set by setting $SHELVEDIR.
 The database is created during the very first save.
 
