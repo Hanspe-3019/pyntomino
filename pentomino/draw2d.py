@@ -8,15 +8,18 @@ from pentomino.problems import build
 
 COLORS = np.array(
     [
-        [ 50,  50,  50],  # gray
-        [255, 255, 255],  # white
+        [ 50,  50,  50],  # darkgray
+        [240, 240, 240],  # white
+        [180, 180, 180],  # light gray
     ]
 )
 
 def stretch_and_filter(plane, by=10):
     ''' Die Ebene wird um den Faktor `by` in beiden Dimensionen gedehnt.
-    Daraus lässt sich ein 2-farbiges Image erstellen, bei dem dann die Übergänge
+    Daraus lässt sich ein 3-farbiges Image erstellen, bei dem dann die Übergänge
     in `plane` schwarz angemalt werden. 
+    Der äußere Bereich wird weiß, die belegten Positionen werden
+    hellgrau dargestellt.
     '''
     stretched = plane.repeat(by, axis=1).repeat(by, axis=0)
     img = np.zeros_like(stretched)
@@ -28,6 +31,9 @@ def stretch_and_filter(plane, by=10):
     oben = np.roll(img, -1, axis=0) == 0
     links = np.roll(img, -1, axis=1) == 0
     img[np.roll(weiss & oben & links, 1, axis=(0, 1))] = 0
+
+    innen = (stretched > 0) & (img != 0)
+    img[innen] = 2
 
     return COLORS[
         img[by: 1-by, by: 1-by]

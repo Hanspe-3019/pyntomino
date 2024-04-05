@@ -7,6 +7,7 @@ dieses Module.
 import os
 from pathlib import Path
 import shelve
+import dbm
 
 from pentomino.problems import build
 
@@ -41,12 +42,15 @@ def version_as_int(key):
 
 def get_versions(prefix):
     ' -> sorted( (k, v) ) '
-    with shelve.open(DB, flag='r') as db:
-        return sorted(
-            (
-                (key, val) for key, val in db.items() if key.startswith(prefix)
+    try:
+        with shelve.open(DB, flag='r') as db:
+            return sorted(
+                (
+                    (key, val) for key, val in db.items() if key.startswith(prefix)
+                )
             )
-        )
+    except dbm.error:
+        return []
 
 def get_keys(prefix=None):
     ''' -
