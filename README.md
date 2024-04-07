@@ -85,6 +85,7 @@ If there are saved solutions for a problem, you can browse them
 by pressing **j** or **k**. Pressing **d** deletes the solution from the database.
 
 ## Adding new problems
+see this <a href=pentomino/problems/README.md>README</a>
 
 
 
