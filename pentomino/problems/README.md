@@ -8,7 +8,7 @@ It is possible, that a problem is prefilled with one or more pentonminos.
 
  - -1 means: position has to stay empty
  -  0 means: position is a puzzle position, that is, it has to be occupied with some pentomino
- - >0 means: position is already occupied with some part of a pentomino  <br>
+ - \>0 means: position is already occupied with some part of a pentomino  <br>
 The integer must be a valid numerical pentomino code.
 
 
