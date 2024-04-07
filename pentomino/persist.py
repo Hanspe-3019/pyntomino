@@ -1,8 +1,7 @@
 ''' Persistierung eines Problems (gelöst oder ungelöst)
 Benutzt shelve. Die Datenbank heißt pentomino.db in dem Verzeichnis
 laut $SELVEDIR.
-Ist $SELVEDIR nicht gesetzt, landet es im package einen höher als
-dieses Module.
+Ist $SELVEDIR nicht gesetzt, landet es im home directory.
 '''
 import os
 from pathlib import Path
@@ -11,8 +10,7 @@ import dbm
 
 from pentomino.problems import build
 
-DB = os.environ.get('SHELVEDIR', Path(__file__).parents[1] ) / 'pentomino'
-print(f'Shelve-File ist {DB}.db')
+DB = os.environ.get('SHELVEDIR', Path.home() ) / 'pentomino'
 
 def save(raum, prefix=None):
     ''' - 

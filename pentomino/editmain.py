@@ -30,14 +30,14 @@ class EditGrid:
       +---------+-------------/
     '''
     def __init__(self):
-        self.fig = plt.figure('Grid')
+        self.fig = plt.figure('EditMode')
         maingrid = gridspec.GridSpec(
             1, 2,
             figure=self.fig,
             width_ratios=[3,7]
         )
         grid3d = gridspec.GridSpecFromSubplotSpec(
-            1,1,
+                1,1,
             subplot_spec=maingrid[1]
         )
         self.subplot3d = self.fig.add_subplot(

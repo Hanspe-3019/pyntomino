@@ -74,7 +74,7 @@ class Mesh3D():
             self.plot.plot(alter_colors=True)
         elif event.key == 'g':
             self.go_and_stop()
-        elif event.key == 's':
+        elif event.key == 's' and self.menu is not None:
             problem = self.menu.get_selected().labelstr
             key = persist.save(self.raum, prefix=problem)
             self.put(f'saved as {key}')
