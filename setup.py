@@ -12,6 +12,5 @@ setup(
         'matplotlib',
         'numpy',
         'scikit-image',
-        'perftree',
     ]
 )
