@@ -1,5 +1,10 @@
 # Pentominos are fun
 
+A Solver for [Pentomino](https://en.wikipedia.org/wiki/Pentomino) 2D- and 3D-puzzles written in python using 
+[matplotlib's interactive backend](https://matplotlib.org/stable/users/explain/figure/backends.html).
+
+Beside [numpy](https://numpy.org) the solver also uses [scikit-image's morphology](https://scikit-image.org/docs/stable/api/skimage.morphology.html)
+
 ## Install
 
 Clone repo and go into directory with setup.py. Run
@@ -8,7 +13,16 @@ pip install .
 ```
 ## How to use
 
-You can usage the package in two modes: *Showroom* and *Editmode*: 
+
+Starting from the shell, you can use the package in two modes: *Showroom* and *Editmode*.
+
+The puzzle is shown as 3D-projection. The view can be adjusted by dragging with the mouse. Predefined views can be applied via keyboard keys `0` to `9`. 
+The display can also be adjusted by 
+flipping along one axis via keyboard keys `x`, `y`, `z`.
+
+The colors used to display and the pentominos are choosen at random and
+can be altered via keyboard key `c`.
+
 ### Showroom
 Playing with predefined problems. To run enter 
 ```bash
