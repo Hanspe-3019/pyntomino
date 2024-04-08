@@ -5,7 +5,7 @@ import random
 import time
 from dataclasses import dataclass
 
-from perftree import print_it, TimeIt, is_enabled
+from pentomino.solving.perfproxy import print_it, TimeIt, is_enabled
 from pentomino.pento import get_pentominos
 from pentomino.solving import morph
 from pentomino.solving import matchstone

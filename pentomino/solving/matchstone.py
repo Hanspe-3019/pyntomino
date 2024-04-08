@@ -7,7 +7,7 @@ next solver                   :       1       2.2 s               2.1 s   97%
     check_holes               :   27394       2.5 s    91.7 µs    2.5 s  100%
 '''
 import numpy as np
-import perftree
+from pentomino.solving import perfproxy as perftree
 
 @perftree.time_it
 def get_good_posis(pos, space):

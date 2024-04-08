@@ -11,7 +11,7 @@
 import numpy as np
 
 from skimage import morphology
-from perftree import time_it
+from pentomino.solving.perfproxy import time_it
 
 MARK_EMPTY = 0
 MARK_BACKGROUND = -1

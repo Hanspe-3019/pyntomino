@@ -1,7 +1,8 @@
 ''' Proxy für optionales package perftree
+git@github.com:Hanspe-3019/perftree.git
 '''
 try:
-    import perftreex as perftree
+    import perftree
 except ImportError:
     PROXY = False
 else:

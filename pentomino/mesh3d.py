@@ -3,9 +3,6 @@
 '''
 import threading
 import matplotlib.pyplot as plt
-# from matplotlib.backend_tools import Cursors
-
-import perftree
 
 from pentomino.plotting.plot import Plot
 
@@ -14,6 +11,7 @@ from pentomino import persist
 from pentomino.solving import puzzler
 from pentomino import menu
 from pentomino import keymap
+from pentomino.solving import perfproxy as perftree
 
 HELPBOX = {
     "facecolor": 'antiquewhite',
