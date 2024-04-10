@@ -33,7 +33,10 @@ class MenuItem(plt.Rectangle):
         super().__init__( (0,0), 1, 1,)
 
         self.set_figure(fig)
-        self.labelstr, self.problem  = label_data
+        self.problem_str, self.problem  = label_data
+        self.labelstr = self.problem_str
+        if self.labelstr.startswith('#'):
+            self.labelstr = self.problem_str[1:11]
         self.is_active = False
 
         # Setting the transform to IdentityTransform() lets us specify
@@ -157,13 +160,15 @@ class Menu:
         self.remove()
         problems = gp.Problems(gp.MODULES_HERE[self.current_menu])
         self.menuitems.clear()
-        for problem in problems.get_problems():
-            data = (problem, problems.get_problem(problem))
+
+        for problem_str in problems.get_problems():
+            problem_fkt = problems.get_problem_fkt(problem_str)
             item = MenuItem(
                 self.fig,
-                data,
+                (problem_str, problem_fkt),
             )
             self.menuitems.append(item)
+
         self.draw_items()
 
 def testit():

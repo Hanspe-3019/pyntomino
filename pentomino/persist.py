@@ -8,15 +8,13 @@ from pathlib import Path
 import shelve
 import dbm
 
-from pentomino.problems import build
-
 DB = os.environ.get('SHELVEDIR', Path.home() ) / 'pentomino'
+
+USER = '#'
 
 def save(raum, prefix=None):
     ''' - 
     '''
-    prefix = gen_prefix(raum) if prefix is None else prefix
-
     with shelve.open(DB, flag='c') as db:
         try:
             cnt = max(
@@ -50,14 +48,15 @@ def get_versions(prefix):
     except dbm.error:
         return []
 
-def get_keys(prefix=None):
-    ''' -
+def get_keys(prefix='', suffix=''):
+    ''' startswith('') and .endwith('') always true
     '''
     with shelve.open(DB, flag='r') as db:
-        if prefix is None:
-            return list(db.keys())
 
-        return [key for key in db.keys() if key.startswith(prefix)]
+        return [
+            key for key in db.keys()
+            if key.startswith(prefix) and key.endswith(suffix)
+        ]
 
 def get_obj(key):
     ''' -
@@ -74,11 +73,3 @@ def pop(key):
             del db[key]
             print(f'remove_obj: {key}')
         return obj
-
-def gen_prefix(raum):
-    ''' -
-    '''
-    trimmed_wo_hull = build.trim_with_empty_hull(raum)[1:-1, 1:-1, 1:-1]
-    shape = trimmed_wo_hull.shape
-
-    return  str(shape).replace(', ', '-')[1:-1] # '(5,4,3)' -> '5-4-3'

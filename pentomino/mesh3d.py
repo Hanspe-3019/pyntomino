@@ -68,7 +68,7 @@ class Mesh3D():
             self.plot.plot()
         elif event.key in '1234567890':
             self.change_view(event.key)
-        elif event.key in 'ac':
+        elif event.key == 'c':
             self.plot.plot(alter_colors=True)
         elif event.key == 'g':
             self.go_and_stop()

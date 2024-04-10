@@ -19,12 +19,6 @@ class Planes:
         self.add_planes()
         self.count_set = 0
 
-    def on_key(self, event):
-        ' Zur Zeit keine Aktionen mit Tastatur '
-        if event.key == 'xx':  # Dummy-Test wegen pylint unsed-argument
-            return True
-        return False
-
     def remove_gridplanes(self):
         ''' -
         '''
@@ -113,3 +107,10 @@ class Planes:
             fontsize='x-small'
         )
         rect.set_facecolor(color)
+    def put(self, message):
+        ' display message '
+        self.fig.axes[1].set_xlabel(
+            message,
+            loc='left',
+            fontsize='x-small',
+        )

@@ -8,6 +8,7 @@ from pentomino.plotting import plot
 from pentomino.mesh3d import Mesh3D
 from pentomino.editplanes import Planes
 from pentomino.problems import build
+from pentomino import persist
 
 WHITE = (1,1,1,1) # RGBA
 
@@ -60,14 +61,14 @@ class EditGrid:
         }
 
     def on_key(self, event):
-        ''' Tastatureingaben werden zuerst an Mesh3D.on_key() weitergeleitet
-        Meldet die False, geht es weiter an Planes.on_key().
+        ''' Tastatureingaben werden zuerst an Planes.on_key() weitergeleitet
+        Meldet die False, geht es weiter an Mesh3D.on_key().
         '''
 
-        if self.mesh3d.on_key(event) or self.planes.on_key(event):
-            pass
+        if event.key == 's':
+            self.store_in_shelve()
         else:
-            print(f'EditMain.on_key: {event.key}')
+            self.mesh3d.on_key(event)
 
     def on_pick(self, event):
         ''' Das Gitter ist pickable
@@ -86,6 +87,20 @@ class EditGrid:
 
         self.mesh3d.refresh(trimmed)
         plot.Plot(self.subplot3d, trimmed).plot()
+
+    def store_in_shelve(self):
+        ' - '
+        if self.planes.count_set < 10 or self.planes.count_set % 5 != 0:
+            self.planes.put(f'?? {self.planes.count_set}')
+            return
+        problem = build.trim_with_empty_hull(self.planes.raum)
+        its_key = persist.USER + build.hash_it(problem)
+        if len(persist.get_keys(prefix=its_key)) > 0:
+            self.planes.put('Problem already saved')
+            return
+        saved_as = persist.save(problem, prefix=its_key)
+        self.planes.put(f'store_in_shelve {saved_as}')
+
 
 def main():
     ' - '

@@ -1,5 +1,6 @@
 ''' Module zum initialisieren von Problemen
 '''
+import hashlib
 import numpy as np
 
 def init(dimensions):
@@ -39,3 +40,12 @@ def trim_with_empty_hull(problem):
     raum.fill(-1)
     raum[1:-1, 1:-1, 1:-1] = trimmed
     return raum
+
+def hash_it(problem):
+    ''' np.array wird serialisiert und am ende ein SHA1-digest erzeugt
+    '''
+    flattened = problem.flatten()
+    flattened[flattened >= 0] = 1
+    flattened[flattened <  0] = 0
+    as_bytes = ''.join(map(str, flattened)).encode()
+    return hashlib.sha1(as_bytes).hexdigest()

@@ -1,18 +1,18 @@
-''' Liste der Räume in den problems files
+''' Liste der Räume in den problems modulen und user problems
+Dies Modul exportiert
+USERPROBLEMS : Die Keys der User Problems im Pentomino-Shelve
+MODULES_HERE : Liste der vorhandenen Problem-Module mit den vordefinierten
+               Problems (ohne _MODUL_PREFIX
 '''
 import importlib   # https://docs.python.org/3/library/importlib.html
 import inspect     # https://docs.python.org/3/library/inspect.html
 from pathlib import Path
 
-FUNCTION_PREFIX = 'problem_'
-MODULE_PREFIX = 'problems_'
+from pentomino import persist
 
-MODULES_HERE = [
-    module.stem.removeprefix(MODULE_PREFIX)
-    for module in Path(__file__).parent.glob('*.py')
-    if module.stem.startswith(MODULE_PREFIX)
-]
-
+_FUNC_PREFIX = 'problem_'
+_MODUL_PREFIX = 'problems_'
+_USER_PROBS = '*USER*'
 
 
 class Problems():
@@ -20,32 +20,44 @@ class Problems():
     '''
     def __init__(self, modname):
         self.mod = importlib.import_module(
-                '.problems.' + MODULE_PREFIX + modname,
+                '.problems.' + _MODUL_PREFIX + modname,
                 package='pentomino',
-                )
+                ) if modname != _USER_PROBS else None
         self.funcs = dict(
             inspect.getmembers(
                 self.mod,
                 inspect.isfunction
             )
-        )
-    def get_problems(self):
-        ''' Liste der in mod enthaltenen Funktionen
-        '''
-        return [func.removeprefix(FUNCTION_PREFIX)
-                for func in self.funcs
-                if func.startswith(FUNCTION_PREFIX)]
+        ) if modname != _USER_PROBS else None
 
-    def get_problem(self, name):
+    def get_problems(self):
+        ''' Liste der in mod enthaltenen Funktionen bzw.
+            Liste der Keys der User-Problems
+        '''
+        if self.mod is None:
+            # persist.USER + SHA1 + '_0'
+            # z.B. #75e1ca55cc8515f2963ef89c388ae19b8345198b_0
+            return USERPROBLEMS
+
+        return [func.removeprefix(_FUNC_PREFIX)
+                for func in self.funcs
+                if func.startswith(_FUNC_PREFIX)]
+
+    def get_problem_fkt(self, name):
         ''' liefert function object
         '''
-        return self.funcs.get(FUNCTION_PREFIX + name, None)
+        if self.mod is None:
+            def get_obj():
+                return persist.get_obj(name)
 
-def test():
-    ' Test '
-    problems = Problems('problems')
-    print(
-        '\n'.join(problems.get_problems())
-    )
-    print(problems.get_problem('simple_f')) # gibt es
-    print(problems.get_problem('simple_q')) # gibt es nicht
+            return get_obj
+
+        return self.funcs.get(_FUNC_PREFIX + name, None)
+
+USERPROBLEMS = persist.get_keys(prefix=persist.USER, suffix='_0')
+_USER = [_USER_PROBS,] if len(USERPROBLEMS) > 0 else []
+MODULES_HERE = [
+    module.stem.removeprefix(_MODUL_PREFIX)
+    for module in Path(__file__).parent.glob('*.py')
+    if module.stem.startswith(_MODUL_PREFIX)
+] + _USER
