@@ -67,6 +67,8 @@ class EditGrid:
 
         if event.key == 's':
             self.store_in_shelve()
+        elif event.key in 'xyz':
+            pass # funktioniert nicht !
         else:
             self.mesh3d.on_key(event)
 
@@ -100,7 +102,6 @@ class EditGrid:
             return
         saved_as = persist.save(problem, prefix=its_key)
         self.planes.put(f'store_in_shelve {saved_as}')
-
 
 def main():
     ' - '

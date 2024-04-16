@@ -5,9 +5,13 @@ A Solver for [Pentomino](https://en.wikipedia.org/wiki/Pentomino) 2D- and 3D-puz
 
 Beside [numpy](https://numpy.org) the solver also uses [scikit-image's morphology](https://scikit-image.org/docs/stable/api/skimage.morphology.html)
 
+The package contains some builtin puzzle problems. Via Edit Mode new problems can be created and saved as *User Problems*.
+
+Found solutions of builtin and user problems can be saved.
+
 ## Install
 
-Clone repo and go into directory with setup.py. Run
+Clone or download the repo and go into directory with setup.py. Run
 ```bash
 pip install .
 ```
@@ -24,7 +28,7 @@ The colors used to display and the pentominos are choosen at random and
 can be altered via keyboard key `c`.
 
 ### Showroom
-Playing with predefined problems. To run enter 
+Show and solve predefined and user problems. To run enter 
 ```bash
 python -m pentomino
 ```
@@ -36,6 +40,7 @@ At the left side there is a simple menu of predefined problems.
 The problems are grouped to reduce the size of the menu.
 
 The menu is navigated with the keyboard:
+
  - up and down move the highlight up and down
  - enter will select the highlighted problem and will draw it as 3D projection.
  - left and right will switch the group of problems shown.
@@ -71,36 +76,57 @@ and can be interrupted with another press of **g**.
 <img width="500" alt="Screenshot Solver timed out" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/1a20c1f8-715c-40d6-a44c-84792563e7e6">
 
 
-Pressing **g** again to continue the solving process.
+Pressing **g** again to resume the solving process.
 
 The solver interrupts itself if
+
  - a solution is found or
  - a certain time interval is expired. This time interval can be increased or decreased
 by pressing **+** or **-**.
 
-After a timeout, the thread can be continued with **g**.
+After an interrupt, the thread can be continued with **g**.
 
 <img width="500" alt="Screenshot Solution found" src="https://github.com/Hanspe-3019/pyntomino/assets/55148527/5b05f658-8fc1-45b1-bc56-bb366733b5af">
 
 
 The sequence of stones gets randomised when starting the solver.
-Repeating a solver run will probably yield a new solution.
+Repeating a solver run will probably yield another solution.
 
 ## Saving solutions and displaying them
 
-Pressing **s**-key saves the solution. 
+Pressing **s**-key in Showroom saves the solution.
 
-You save solutions in a [Shelve Data Base](https://docs.python.org/3/library/shelve.html) named pentomino.db.
+Pressing **s**-key in Editmode saves the problem. 
+
+The saved data is saved in a [Shelve Data Base](https://docs.python.org/3/library/shelve.html) named **pentomino.db**.
 The default location is your home directory and can be set by setting $SHELVEDIR.
 The database is created during the very first save.
 
 
-If there are saved solutions for a problem, you can browse them
+If there are saved solutions for a problem, you can browse them in Showroom 
 by pressing **j** or **k**. Pressing **d** deletes the solution from the database.
 
-## Adding new problems
+## Adding or modifying builtin problems
+This is to be done by coding simple python functions, you can also add or modify the structure
+of the menues by sorting problem functions into problem modules.
 see this <a href=pentomino/problems/README.md>README</a>
 
+## Saving user problems
 
+Start Editmode with `python -m pentomino --edit`.
+
+Build a new problem by clicking the fields on the planes.
+
+When satisfied, press key **s** to save the problem into *pentomino.db*.
+
+The internal data that describes your problem is hashed to create a unique key to store it in *pentomino.db*.
+
+All user problems are selectable in Showroom's menu as special problem group and can be used like builtin problems.
+
+## Removing a user problem
+
+In Showroom activate the problem to be removed and press key **d**. 
+
+If there are already solutions stored, these have to be deleted first.
 
 

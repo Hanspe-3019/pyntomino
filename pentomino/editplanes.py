@@ -114,3 +114,4 @@ class Planes:
             loc='left',
             fontsize='x-small',
         )
+        self.fig.canvas.draw()

@@ -73,3 +73,12 @@ def pop(key):
             del db[key]
             print(f'remove_obj: {key}')
         return obj
+
+def to_menulabel(key):
+    ''' -
+    '''
+    if key.startswith(USER):
+        # '#' + SHA1 + '_0' -> die ersten 10 Halbbytes von SHA1
+        return key[1:11]
+
+    return key

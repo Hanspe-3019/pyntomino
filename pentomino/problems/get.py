@@ -1,6 +1,6 @@
 ''' Liste der Räume in den problems modulen und user problems
 Dies Modul exportiert
-USERPROBLEMS : Die Keys der User Problems im Pentomino-Shelve
+
 MODULES_HERE : Liste der vorhandenen Problem-Module mit den vordefinierten
                Problems (ohne _MODUL_PREFIX
 '''
@@ -37,7 +37,7 @@ class Problems():
         if self.mod is None:
             # persist.USER + SHA1 + '_0'
             # z.B. #75e1ca55cc8515f2963ef89c388ae19b8345198b_0
-            return USERPROBLEMS
+            return get_userproblems()
 
         return [func.removeprefix(_FUNC_PREFIX)
                 for func in self.funcs
@@ -54,8 +54,11 @@ class Problems():
 
         return self.funcs.get(_FUNC_PREFIX + name, None)
 
-USERPROBLEMS = persist.get_keys(prefix=persist.USER, suffix='_0')
-_USER = [_USER_PROBS,] if len(USERPROBLEMS) > 0 else []
+def get_userproblems():
+    '''  - '''
+    return persist.get_keys(prefix=persist.USER, suffix='_0')
+
+_USER = [_USER_PROBS,] if len(get_userproblems()) > 0 else []
 MODULES_HERE = [
     module.stem.removeprefix(_MODUL_PREFIX)
     for module in Path(__file__).parent.glob('*.py')

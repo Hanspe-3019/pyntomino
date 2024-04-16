@@ -26,22 +26,25 @@ class Showroom(Mesh3D):
         self.fig = fig
         self.menu = menu.Menu(fig)
         self.menu.set_current_menu(1)
-        self.saved_kv = []
+        self.saved_versions = []    # [(key, space)]
         self.current = 0
         super().__init__(subplot3d, raum, self.menu)
 
         self.cids = {
-            'key': fig.canvas.mpl_connect('key_press_event', self.my_on_key),
+            'key': fig.canvas.mpl_connect(
+                'key_press_event', self.my_on_key
+                ),
         }
         self.menu_index = 0
 
 
     def my_on_key(self, event):
-        ''' Tasten, die hier nicht verarbeitet werden, werden an die Mutter
-        weitergeleitet.
-        z.B. wählt ← oder → eine Problemgruppe aus, das macht Mesh3D.on_key()
-        z.B. wählt j oder k eine Historie aus der Shelve aus, eine Aufgabe für
-        den Showroom
+        ''' Tasten, die hier nicht verarbeitet werden, 
+        werden an die Mutter weitergeleitet.
+        z.B. wählt ← oder → eine Problemgruppe aus,
+        das macht Mesh3D.on_key()
+        z.B. wählt j oder k eine Historie aus der Shelve aus,
+        eine Aufgabe für den Showroom
         '''
         if event.key in ['left', 'right']:
             # Menu-Wechsel
@@ -52,20 +55,22 @@ class Showroom(Mesh3D):
             super().on_key(event)
             item = self.menu.get_selected()
             self.current = -1
-            self.saved_kv = persist.get_versions(item.labelstr)
+            self.saved_versions = persist.get_versions(item.labelstr)
             self.fig.suptitle(
-                'No Solutions yet' if len(self.saved_kv) == 0 else
-                f'{len(self.saved_kv)} Solutions stored'
+                'No Solutions yet' if len(self.saved_versions) == 0 else
+                f'{len(self.saved_versions)} Solutions stored'
             )
             self.fig.canvas.draw()
         elif event.key in 'kj':
             # Bewegung in den Lösungen zu einem Problem
-            if len(self.saved_kv) == 0:
+            if len(self.saved_versions) == 0:
                 return
             incr = 1 if event.key == 'j' else -1
-            self.current = (self.current + incr) % len(self.saved_kv)
-            self.fig.suptitle(f'{self.current+1} from {len(self.saved_kv)}')
-            _, current_space = self.saved_kv[self.current]
+            self.current = (self.current + incr) % len(self.saved_versions)
+            self.fig.suptitle(
+                f'{self.current+1} from {len(self.saved_versions)}'
+            )
+            _, current_space = self.saved_versions[self.current]
             self.refresh(current_space)
             self.plot.refresh(current_space).plot()
         elif event.key == 't':
@@ -78,19 +83,29 @@ class Showroom(Mesh3D):
             # nach save noch refresh von self.spaces
             super().on_key(event)
             item = self.menu.get_selected()
-            self.saved_kv = persist.get_versions(item.labelstr)
+            self.saved_versions = persist.get_versions(item.labelstr)
 
-            self.fig.suptitle(f'{len(self.saved_kv)} Solutions stored')
+            self.fig.suptitle(
+                f'{len(self.saved_versions)} Solutions stored'
+            )
 
         elif event.key == 'd':
             try:
-                key = self.saved_kv[self.current][0]
-            except IndexError:
-                pass
-            else:
-                _ = persist.pop(key)
-                self.saved_kv.pop(self.current)
-                self.put(f'removed {key}')
+                version_key, _ = self.saved_versions[self.current]
+            except IndexError: # Delete problem
+                item = self.menu.get_selected()
+                _ = persist.pop(item.problem_str)
+                if item.problem_str.startswith(persist.USER):
+                    self.menu.refresh()
+                    self.put(f'removed {item.problem_str}')
+                    _ = self.menu.set_selected_relative(None)
+                    self.setup_problem()
+                else:
+                    self.put('Only user problems can be deleted')
+            else: # Delete version
+                _ = persist.pop(version_key)
+                self.saved_versions.pop(self.current)
+                self.put(f'removed {version_key}')
         else:
             super().on_key(event)
 
