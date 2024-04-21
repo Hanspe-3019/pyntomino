@@ -7,7 +7,7 @@ from  matplotlib import gridspec
 from pentomino.plotting import plot
 from pentomino.mesh3d import Mesh3D
 from pentomino.editplanes import Planes
-from pentomino.problems import build
+from pentomino.problems import build, dumpproblem
 from pentomino import persist
 
 WHITE = (1,1,1,1) # RGBA
@@ -69,6 +69,8 @@ class EditGrid:
             self.store_in_shelve()
         elif event.key in 'xyz':
             pass # funktioniert nicht !
+        elif event.key == 'e':
+            self.export_as_function()
         else:
             self.mesh3d.on_key(event)
 
@@ -102,6 +104,14 @@ class EditGrid:
             return
         saved_as = persist.save(problem, prefix=its_key)
         self.planes.put(f'store_in_shelve {saved_as}')
+
+    def export_as_function(self):
+        ' - '
+        if self.planes.count_set < 10 or self.planes.count_set % 5 != 0:
+            self.planes.put(f'?? {self.planes.count_set}')
+            return
+        problem = build.trim_with_empty_hull(self.planes.raum)
+        dumpproblem.source(problem)
 
 def main():
     ' - '

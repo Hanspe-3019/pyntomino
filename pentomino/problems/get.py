@@ -1,6 +1,5 @@
 ''' Liste der Räume in den problems modulen und user problems
 Dies Modul exportiert
-
 MODULES_HERE : Liste der vorhandenen Problem-Module mit den vordefinierten
                Problems (ohne _MODUL_PREFIX
 '''

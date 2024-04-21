@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from pentomino.mesh3d import Mesh3D
 from pentomino import persist
 from pentomino import menu
-from pentomino import draw2d
+from pentomino.plotting import draw2d
 from pentomino.problems.problems_demo import problem_demo_all as demo_problem
 
 def main():

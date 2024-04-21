@@ -52,7 +52,7 @@ def problem_demo_all():
 
 def problem_5x6():
     'return Raum'
-    raum = init((7, 9, 3))
+    raum = init((7, 9, 1))
     raum[1:6, 1:7, 1] = 0
     return raum
 
@@ -69,7 +69,7 @@ def problem_kreuz():
 
 def problem_monster():
     'return Raum'
-    raum = init((11, 7, 3))
+    raum = init((11, 7, 1))
     raum[4:9 , 1  , 1   ] = 0
     raum[1   , 2:4, 1   ] = 0
     raum[3:10, 2:4, 1   ] = 0
@@ -107,7 +107,7 @@ def problem_pyramid():
 
 def problem_halloween():
     'return Raum'
-    raum = init((11, 7, 3))
+    raum = init((11, 7, 1))
     raum[2:11, 1, 1] = 0
     raum[1:5, 2, 1] = 0
     raum[8:12, 2, 1] = 0
