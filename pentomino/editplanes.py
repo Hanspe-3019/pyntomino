@@ -15,8 +15,9 @@ class Planes:
     def __init__(self, fig, gridplanes):
         self.fig = fig
         self.gridplanes = gridplanes
-        self.raum = build.init((4,3,1))
-        self.add_planes()
+        self.raum = None
+        initial_space = build.init((4,3,1))
+        self.add_planes(initial_space)
         self.count_set = 0
 
     def remove_gridplanes(self):
@@ -24,8 +25,10 @@ class Planes:
         '''
         for plane in self.fig.axes[1:]:
             plane.remove()
-    def add_planes(self):
+    def add_planes(self, space):
         ' - '
+        self.raum = space
+
         self.remove_gridplanes()
         (width, height, count) = self.raum.shape
 

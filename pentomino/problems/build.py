@@ -12,7 +12,7 @@ def init(dimensions):
     raum.fill(-1)
     return raum
 
-def trim_with_empty_hull(problem):
+def trim_with_empty_hull(problem, reset=False):
     ''' Erzeuge minimale Hülle um ein Problem.
     Das Problem kann teilweise oder sogar vollständig gefüllt sein
     '''
@@ -33,6 +33,9 @@ def trim_with_empty_hull(problem):
         y_min: y_max + 1,
         z_min: z_max + 1,
     ]
+    if reset: # Zurücksetzen bereits gesetzter Steine
+        trimmed[np.where(trimmed>0)] = 0
+
     raum = np.zeros(
         np.array(trimmed.shape) + 2,
         dtype=np.int8,

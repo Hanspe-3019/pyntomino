@@ -7,7 +7,7 @@ from  matplotlib import gridspec
 from pentomino.plotting import plot
 from pentomino.mesh3d import Mesh3D
 from pentomino.editplanes import Planes
-from pentomino.problems import build, dumpproblem
+from pentomino.problems import build, dumpproblem, rotate
 from pentomino import persist
 
 WHITE = (1,1,1,1) # RGBA
@@ -68,9 +68,15 @@ class EditGrid:
         if event.key == 's':
             self.store_in_shelve()
         elif event.key in 'xyz':
-            pass # funktioniert nicht !
+            self.rotate_planes(event.key)
         elif event.key == 'e':
             self.export_as_function()
+        elif event.key == 'd':
+            space = build.init((4,3,1))
+            self.planes.add_planes(space)
+            self.mesh3d.refresh(space)
+            plot.Plot(self.subplot3d, space).plot()
+
         else:
             self.mesh3d.on_key(event)
 
@@ -86,8 +92,7 @@ class EditGrid:
         else:
             # Verwendung der rechten oder mittlereren Maustaste
             trimmed = build.trim_with_empty_hull(self.planes.raum)
-            self.planes.raum = trimmed
-            self.planes.add_planes()
+            self.planes.add_planes(trimmed)
 
         self.mesh3d.refresh(trimmed)
         plot.Plot(self.subplot3d, trimmed).plot()
@@ -97,7 +102,7 @@ class EditGrid:
         if self.planes.count_set < 10 or self.planes.count_set % 5 != 0:
             self.planes.put(f'?? {self.planes.count_set}')
             return
-        problem = build.trim_with_empty_hull(self.planes.raum)
+        problem = build.trim_with_empty_hull(self.planes.raum, reset=True)
         its_key = persist.USER + build.hash_it(problem)
         if len(persist.get_keys(prefix=its_key)) > 0:
             self.planes.put('Problem already saved')
@@ -112,6 +117,14 @@ class EditGrid:
             return
         problem = build.trim_with_empty_hull(self.planes.raum)
         dumpproblem.source(problem)
+
+    def rotate_planes(self, plane):
+        ' rotate 90° '
+        problem = build.trim_with_empty_hull(self.planes.raum, reset=True)
+        rot = rotate.rotate_it(problem, plane, by=1)
+        self.planes.add_planes(rot)
+        self.mesh3d.refresh(rot)
+        plot.Plot(self.subplot3d, rot).plot()
 
 def main():
     ' - '

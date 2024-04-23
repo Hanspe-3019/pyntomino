@@ -6,7 +6,7 @@ import numpy as np
 
 from pentomino.pento import get_pentominos
 from pentomino.plotting import colormap
-from pentomino.problems import flip
+from pentomino.problems import rotate
 from pentomino.problems import problems_demo as demo
 
 PENTOMINOS = get_pentominos()
@@ -92,7 +92,7 @@ class Plot():
             # auf Basis einer Kopie des Raums.
 
             self.raum if self.flipped_by is None else
-            flip.flip_by(self.raum, self.flipped_by)
+            rotate.flip_it(self.raum, self.flipped_by)
         )
         self.reset_axes()
 
