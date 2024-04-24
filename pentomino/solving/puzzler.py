@@ -3,35 +3,15 @@
 '''
 import random
 import time
-from dataclasses import dataclass
 
 from pentomino.solving.perfproxy import print_it, TimeIt, is_enabled
 from pentomino.pento import get_pentominos
 from pentomino.solving import morph
 from pentomino.solving import matchstone
 from pentomino.solving import resp_puzzler as resp
+from pentomino.solving.cntl    import PuzzlerCntl
 
 PENTOMINOES = get_pentominos()
-MARK_EMPTY = 0
-INTERRUPT_LEVELS = [
-    # (timeout in secs)
-    .0,      # 0
-    .2,      # 1
-    1.0,    # 2
-    30.0,   # 3
-    120.0,  # 4
-    3600,   # 5 Nolimit
-]
-
-@dataclass
-class PuzzlerCntl():
-    ' einige properties für timout usw. '
-    int_level: int = 1
-    timeout: float = .2
-    timeout_before_stop: float = .2
-    start: float = .0
-    cum_placing: int = 0
-    cnt_placing: int = 0
 
 class Puzzler():
     ''' Das ist die Class, in der die Probiererei implementiert ist.
@@ -41,7 +21,8 @@ class Puzzler():
 
         self.availables = None
         self.all_stones = None
-        self.cntl = PuzzlerCntl()
+        to_be_placed = sum((space == 0).flatten()) // 5
+        self.cntl = PuzzlerCntl(to_be_placed=to_be_placed)
 
         self.solutions = 0
 
@@ -61,12 +42,7 @@ class Puzzler():
 
     def adjust_interrupt(self, down):
         ' Anpassung der Intervall-Länge der Interrupts '
-        i = self.cntl.int_level
-        i = max(i - 1, 0) if down else min(i + 1, len(INTERRUPT_LEVELS))
-        self.cntl.timeout = INTERRUPT_LEVELS[i]
-        old = INTERRUPT_LEVELS[self.cntl.int_level]
-        self.cntl.int_level = i
-        return  f'Timeout {old:.1f} -> {self.cntl.timeout:.1f}'
+        return self.cntl.adjust_interrupt(down)
 
     def stop(self):
         ''' Interrupt solve() by setting timeout to zero
@@ -157,6 +133,7 @@ class Puzzler():
             for position in positions:
                 where = tuple(position) # shape (3,5)
                 self.space[where] = ord(stone)
+                self.cntl.to_be_placed -= 1
                 size, next_pos = morph.check_holes(self.space)
 
                 if size  is None:       # Fertig, alles voll
@@ -170,6 +147,15 @@ class Puzzler():
                     # keine fehlerhaften Löcher, setze nächsten Stein
                     self.availables[index_stone] = False
 
+                    if self.cntl.to_be_placed == self.cntl.prompt_when:
+                        avail = ', '.join(
+                            stone for available, stone in zip(
+                                self.availables, self.all_stones
+                            ) if available
+                        )
+                        yield resp.interrupt(
+                            f'Almost finished? Available {avail}'
+                        )
                     for response in self.try_stone(at_pos=next_pos):
                         yield response
                 else:
@@ -178,6 +164,7 @@ class Puzzler():
                 # muss der letzte Stein zurückgenommen werden:
                 self.space[where] = 0
                 self.availables[index_stone] = True
+                self.cntl.to_be_placed += 1
                 # nächste Position
 
             # alle Positionen ausprobiert, go to next available Stone
