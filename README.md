@@ -5,7 +5,7 @@ A Solver for [Pentomino](https://en.wikipedia.org/wiki/Pentomino) 2D- and 3D-puz
 
 Beside [numpy](https://numpy.org) the solver also uses [scikit-image's morphology](https://scikit-image.org/docs/stable/api/skimage.morphology.html)
 
-The package contains some builtin puzzle problems. Via Edit Mode new problems can be created and saved as *User Problems*.
+The package contains some builtin puzzles, called *problem*s here. Via Edit Mode new problems can be created and saved as *User Problems*.
 
 Found solutions of builtin and user problems can be saved.
 
@@ -17,15 +17,34 @@ pip install .
 ```
 ## How to use
 
-
 Starting from the shell, you can use the package in two modes: *Showroom* and *Editmode*.
 
 The puzzle is shown as 3D-projection. The view can be adjusted by dragging with the mouse. Predefined views can be applied via keyboard keys `0` to `9`. 
-The display can also be adjusted by 
-flipping along one axis via keyboard keys `x`, `y`, `z`.
+The display can also be adjusted by flipping along one axis via keyboard keys `x`, `y`, `z`.
 
-The colors used to display and the pentominos are choosen at random and
-can be altered via keyboard key `c`.
+The colors used to display the pentominos are choosen at random and can be altered via keyboard key `c`.
+
+### Keyboard Settings
+
+The program is controlled mainly with the keyboard. Some keys only apply to Showroom, the others can be used in both modes, but sometimes with different effects.
+
+<table>
+<tr><th>Keys<th>Showroom<th>Edit Mode
+<tr><th>q<td colspan="2">Quit
+<tr><th>c<td colspan="2">Alter color palette at random
+<tr><th>g<td colspan="2">Start or interrupt solving
+<tr><th>+, -<td colspan="2">Adjust timeout interval to automaticly interrupt solving
+<tr><th>1,2,3,...,9<td colspan="2">Switch between predefined view angels
+<tr><th>left / right<td>Switch problem menu<td>n/a
+<tr><th>up, down<td>Select problem<td>n/a
+<tr><th>enter<td>Activate selected problem<td>n/a
+<tr><th>k, j<td>Browse backward/foreward in saved solutions<td>n/a
+<tr><th>t<td>Open view of tomogram<td>n/a
+<tr><th>s<td>Save solution<td>Save User problem, press again to delete
+<tr><th>d<td>Delete Solution or User Problem<td>Empty the planes
+<tr><th>x, y, z<td>Flip 3D-display<td>Rotate planes by 90°
+<tr><th>e<td>Open edit view in new figure<td>Export problem as python code
+</table>
 
 ### Showroom
 Show and solve predefined and user problems. To run enter 

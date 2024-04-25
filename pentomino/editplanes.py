@@ -12,13 +12,13 @@ WHITE = (1,1,1,1) # RGBA
 class Planes:
     ''' -
     '''
-    def __init__(self, fig, gridplanes):
+    def __init__(self, fig, gridplanes, space=None):
         self.fig = fig
         self.gridplanes = gridplanes
         self.raum = None
-        initial_space = build.init((4,3,1))
+        initial_space = build.init((4,3,1)) if space is None else space
         self.add_planes(initial_space)
-        self.count_set = 0
+        self.count_set = sum((initial_space >= 0).flatten())
 
     def remove_gridplanes(self):
         ''' -

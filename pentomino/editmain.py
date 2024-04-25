@@ -30,8 +30,8 @@ class EditGrid:
       |   ...   |             |
       +---------+-------------/
     '''
-    def __init__(self):
-        self.fig = plt.figure('EditMode')
+    def __init__(self,fig=None, space=None):
+        self.fig = plt.figure('EditMode') if fig is None else fig
         maingrid = gridspec.GridSpec(
             1, 2,
             figure=self.fig,
@@ -48,7 +48,8 @@ class EditGrid:
         )
         self.planes = Planes(
             self.fig,
-            maingrid[0]
+            maingrid[0],
+            space=space,
         )
         self.mesh3d = Mesh3D(
             self.subplot3d,
@@ -104,8 +105,11 @@ class EditGrid:
             return
         problem = build.trim_with_empty_hull(self.planes.raum, reset=True)
         its_key = persist.USER + build.hash_it(problem)
-        if len(persist.get_keys(prefix=its_key)) > 0:
-            self.planes.put('Problem already saved')
+        keys_in_shelve = persist.get_keys(prefix=its_key)
+        if len(keys_in_shelve) > 0:
+            the_key = keys_in_shelve[0]
+            _ = persist.pop(the_key)
+            self.planes.put(f'Problem {the_key} deleted!')
             return
         saved_as = persist.save(problem, prefix=its_key)
         self.planes.put(f'store_in_shelve {saved_as}')

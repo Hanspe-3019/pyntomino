@@ -7,6 +7,7 @@ from pentomino import persist
 from pentomino import menu
 from pentomino.plotting import draw2d
 from pentomino.problems.problems_demo import problem_demo_all as demo_problem
+from pentomino.editmain import EditGrid
 
 def main():
     ' - '
@@ -17,6 +18,8 @@ def main():
 
 class Showroom(Mesh3D):
     ' - '
+    editgrid = None
+
     def __init__(self):
         fig = plt.figure('Showroom')
         fig.set_size_inches((8,8))
@@ -90,24 +93,39 @@ class Showroom(Mesh3D):
             )
 
         elif event.key == 'd':
-            try:
-                version_key, _ = self.saved_versions[self.current]
-            except IndexError: # Delete problem
-                item = self.menu.get_selected()
-                _ = persist.pop(item.problem_str)
-                if item.problem_str.startswith(persist.USER):
-                    self.menu.refresh()
-                    self.put(f'removed {item.problem_str}')
-                    _ = self.menu.set_selected_relative(None)
-                    self.setup_problem()
-                else:
-                    self.put('Only user problems can be deleted')
-            else: # Delete version
-                _ = persist.pop(version_key)
-                self.saved_versions.pop(self.current)
-                self.put(f'removed {version_key}')
+            self.delete_solution()
+        elif event.key == 'e':
+            self.start_editview()
         else:
             super().on_key(event)
+
+    def delete_solution(self):
+        ' Löscht Solution oder User Problem '
+        try:
+            version_key, _ = self.saved_versions[self.current]
+        except IndexError: # Delete problem
+            item = self.menu.get_selected()
+            _ = persist.pop(item.problem_str)
+            if item.problem_str.startswith(persist.USER):
+                self.menu.refresh()
+                self.put(f'removed {item.problem_str}')
+                _ = self.menu.set_selected_relative(None)
+                self.setup_problem()
+            else:
+                self.put('Only user problems can be deleted')
+        else: # Delete version
+            _ = persist.pop(version_key)
+            self.saved_versions.pop(self.current)
+            self.put(f'removed {version_key}')
+
+    def start_editview(self):
+        ' Starte neue Figure mit Problem im Editmode'
+        edit = self.raum.copy()
+        edit[edit>0] = 0
+        plt.close('Edit View')
+        fig_edit = plt.figure('Edit View')
+        Showroom.editgrid = EditGrid(fig=fig_edit, space=edit)
+        fig_edit.show()
 
 if __name__ == '__main__':
     main()

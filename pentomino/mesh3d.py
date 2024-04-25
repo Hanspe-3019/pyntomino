@@ -49,20 +49,14 @@ class Mesh3D():
         if event.key in keymap.BUILTIN_MAPPINGS:
             return True
 
+        if self.on_key_if_menu(event):
+            return True
+
         fig = self.subplot3d.get_figure()
 
         if event.key in '+-' and self.solver is not None:
             resp = self.solver.adjust_interrupt(event.key == '-')
             self.put(resp)
-        elif event.key in ['left', 'right'] and self.menu is not None:
-            self.menu.set_current_menu(event.key=='right')
-            fig.canvas.draw()
-        elif event.key == 'enter' and self.menu is not None:
-            self.setup_problem()
-
-        elif event.key in ['up', 'down'] and self.menu is not None:
-            _ = self.menu.set_selected_relative(event.key == 'up')
-            fig.canvas.draw()
         elif event.key in 'xyz':
             self.plot.flip_by(event.key)
             self.plot.plot()
@@ -72,13 +66,8 @@ class Mesh3D():
             self.plot.plot(alter_colors=True)
         elif event.key == 'g':
             self.go_and_stop()
-        elif event.key == 's' and self.menu is not None:
-            problem = self.menu.get_selected().labelstr
-            key = persist.save(self.raum, prefix=problem)
-            self.put(f'saved as {key}')
         elif event.key == 'v':
             self.toggle_monitoring()
-
         else:
             _ = self.subplot3d.text2D(
                 .05, .7,
@@ -87,6 +76,33 @@ class Mesh3D():
                 bbox=HELPBOX,
             )
             fig.canvas.draw()
+
+        return True
+
+    def on_key_if_menu(self, event):
+        'key_press_event Handler for Showroom only. Return True when handled'
+        if self.menu is None:
+            # test if key valid in showroom and in Edit mode
+            return False
+
+        fig = self.subplot3d.get_figure()
+
+        if event.key in ['left', 'right']:
+            self.menu.set_current_menu(event.key=='right')
+            fig.canvas.draw()
+        elif event.key == 'enter':
+            self.setup_problem()
+
+        elif event.key in ['up', 'down']:
+            _ = self.menu.set_selected_relative(event.key == 'up')
+            fig.canvas.draw()
+        elif event.key == 's':
+            problem = self.menu.get_selected().labelstr
+            key = persist.save(self.raum, prefix=problem)
+            self.put(f'saved as {key}')
+
+        else:
+            return False
 
         return True
 
