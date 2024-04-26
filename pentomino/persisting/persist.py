@@ -18,9 +18,8 @@ USER = '#'
 def store_solution(solution):
     ''' sha1 + '_' + lfd
     '''
-    trimmed = build.trim_with_empty_hull(solution)
-    trimmed[trimmed > 0] = 0
-    its_hash = build.hash_it(trimmed)
+    its_hash = build.hash_of_problem(solution)
+
     with shelve.open(DB, flag='c') as db:
         try:
             cnt = max(
@@ -40,7 +39,7 @@ def store_solution(solution):
 def store_problem(problem):
     ''' USER + sha1
     '''
-    its_hash = build.hash_it(problem)
+    its_hash = build.hash_of_problem(problem)
     with shelve.open(DB, flag='c') as db:
 
         key = f'{USER}{its_hash}'
@@ -52,15 +51,19 @@ def version_as_int(key):
     version = key.rsplit('_', maxsplit=1)[1]
     return int(version)
 
-def get_solutions(prefix):
+def get_solutions(hash_problem):
     ' -> sorted( (k, v) ) '
     try:
         with shelve.open(DB, flag='r') as db:
-            return sorted(
+            prefix = hash_problem.removeprefix(USER)
+            solutions = sorted(
                 (
-                    (key, val) for key, val in db.items() if key.startswith(prefix)
+                    (key, val) for key, val in db.items()
+                    if key.startswith(prefix)
                 )
+
             )
+            return solutions
     except dbm.error:
         return []
 

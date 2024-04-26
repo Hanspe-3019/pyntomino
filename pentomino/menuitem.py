@@ -35,7 +35,6 @@ class MenuItem(plt.Rectangle):
         self.problem_str, self.problem  = label_data
         self.labelstr = persist.to_menulabel(self.problem_str)
         self.is_active = False
-        print(self.problem_str, self.labelstr)
 
         # Setting the transform to IdentityTransform() lets us specify
         # coordinates directly in pixels.

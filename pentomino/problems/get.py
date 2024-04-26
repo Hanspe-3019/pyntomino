@@ -34,8 +34,8 @@ class Problems():
             Liste der Keys der User-Problems
         '''
         if self.mod is None:
-            # persist.USER + SHA1 + '_0'
-            # z.B. #75e1ca55cc8515f2963ef89c388ae19b8345198b_0
+            # persist.USER + SHA1
+            # z.B. #75e1ca55cc8515f2963ef89c388ae19b8345198b
             return persist.get_problems_user()
 
         return [func.removeprefix(_FUNC_PREFIX)

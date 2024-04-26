@@ -44,6 +44,12 @@ def trim_with_empty_hull(problem, reset=False):
     raum[1:-1, 1:-1, 1:-1] = trimmed
     return raum
 
+def hash_of_problem(problem):
+    ' - '
+    trimmed = trim_with_empty_hull(problem)
+    trimmed[trimmed > 0] = 0
+    return hash_it(trimmed)
+
 def hash_it(problem):
     ''' np.array wird serialisiert und am ende ein SHA1-digest erzeugt
     '''

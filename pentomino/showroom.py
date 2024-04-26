@@ -8,6 +8,7 @@ from pentomino import menu
 from pentomino.plotting import draw2d
 from pentomino.problems.problems_demo import problem_demo_all as demo_problem
 from pentomino.editmain import EditGrid
+from pentomino.problems import build
 
 def main():
     ' - '
@@ -58,7 +59,8 @@ class Showroom(Mesh3D):
             super().on_key(event)
             item = self.menu.get_selected()
             self.current = -1
-            self.solutions = persist.get_solutions(item.problem_str)
+            problem_hash = build.hash_of_problem(item.problem())
+            self.solutions = persist.get_solutions(problem_hash)
             self.fig.suptitle(
                 'No Solutions yet' if len(self.solutions) == 0 else
                 f'{len(self.solutions)} Solutions stored'
