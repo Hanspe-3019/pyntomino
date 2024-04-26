@@ -97,8 +97,7 @@ class Mesh3D():
             _ = self.menu.set_selected_relative(event.key == 'up')
             fig.canvas.draw()
         elif event.key == 's':
-            problem = self.menu.get_selected().labelstr
-            key = persist.save(self.raum, prefix=problem)
+            key = persist.store_solution(self.raum)
             self.put(f'saved as {key}')
 
         else:

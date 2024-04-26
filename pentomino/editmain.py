@@ -111,7 +111,7 @@ class EditGrid:
             _ = persist.pop(the_key)
             self.planes.put(f'Problem {the_key} deleted!')
             return
-        saved_as = persist.save(problem, prefix=its_key)
+        saved_as = persist.store_problem(problem)
         self.planes.put(f'store_in_shelve {saved_as}')
 
     def export_as_function(self):

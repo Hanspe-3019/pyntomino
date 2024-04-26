@@ -8,27 +8,42 @@ from pathlib import Path
 import shelve
 import dbm
 
-DB = os.environ.get('SHELVEDIR', Path.home() ) / 'pentomino'
+from pentomino.problems import build
+
+DB = os.environ.get('SHELVEDIR', Path.home() ) / 'pentomino-n'
 
 USER = '#'
 
-def save(raum, prefix=None):
-    ''' - 
+def store_solution(solution):
+    ''' sha1 + '_' + lfd
     '''
+    trimmed = build.trim_with_empty_hull(solution)
+    trimmed[trimmed > 0] = 0
+    its_hash = build.hash_it(trimmed)
     with shelve.open(DB, flag='c') as db:
         try:
             cnt = max(
                 version_as_int(key) for key in db.keys()
-                if key.startswith(prefix)
+                if key.startswith(its_hash)
             )
         except ValueError: # keys() is empty
             cnt = 0
         else:
             cnt += 1
 
-        key= f'{prefix}_{cnt}'
-        db[key] = raum
+        key = f'{its_hash}_{cnt}'
+        db[key] = solution
 
+    return key
+
+def store_problem(problem):
+    ''' USER + sha1
+    '''
+    its_hash = build.hash_it(problem)
+    with shelve.open(DB, flag='c') as db:
+
+        key = f'{USER}{its_hash}'
+        db[key] = problem
     return key
 
 def version_as_int(key):
@@ -51,12 +66,15 @@ def get_versions(prefix):
 def get_keys(prefix='', suffix=''):
     ''' startswith('') and .endwith('') always true
     '''
-    with shelve.open(DB, flag='r') as db:
+    try:
+        with shelve.open(DB, flag='r') as db:
 
-        return [
-            key for key in db.keys()
-            if key.startswith(prefix) and key.endswith(suffix)
-        ]
+            return [
+                key for key in db.keys()
+                if key.startswith(prefix) and key.endswith(suffix)
+            ]
+    except dbm.error:
+        return []
 
 def get_obj(key):
     ''' -
