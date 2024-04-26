@@ -11,6 +11,7 @@ import dbm
 from pentomino.problems import build
 
 DB = os.environ.get('SHELVEDIR', Path.home() ) / 'pentomino-n'
+DBVERSION = None
 
 USER = '#'
 
@@ -51,7 +52,7 @@ def version_as_int(key):
     version = key.rsplit('_', maxsplit=1)[1]
     return int(version)
 
-def get_versions(prefix):
+def get_solutions(prefix):
     ' -> sorted( (k, v) ) '
     try:
         with shelve.open(DB, flag='r') as db:
@@ -60,6 +61,26 @@ def get_versions(prefix):
                     (key, val) for key, val in db.items() if key.startswith(prefix)
                 )
             )
+    except dbm.error:
+        return []
+
+def has_problems_user():
+    ' - '
+    try:
+        with shelve.open(DB, flag='r') as db:
+            any_key = (key for key in db.keys() if key.startswith(USER))
+            return next(any_key, False) is not False
+    except dbm.error:
+        return False
+
+def get_problems_user():
+    ' USER + sha1 '
+    try:
+        with shelve.open(DB, flag='r') as db:
+
+            return [
+                key for key in db.keys() if key.startswith(USER)
+            ]
     except dbm.error:
         return []
 
