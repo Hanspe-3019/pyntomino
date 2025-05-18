@@ -8,6 +8,7 @@ from pentomino import menu
 from pentomino.plotting import draw2d
 from pentomino.problems.problems_demo import problem_demo_all as demo_problem
 from pentomino.editmain import EditGrid
+from pentomino.problems import build
 
 def main():
     ' - '
@@ -29,7 +30,7 @@ class Showroom(Mesh3D):
         self.fig = fig
         self.menu = menu.Menu(fig)
         self.menu.set_current_menu(1)
-        self.saved_versions = []    # [(key, space)]
+        self.solutions = []    # [(key, space)]
         self.current = 0
         super().__init__(subplot3d, raum, self.menu)
 
@@ -58,22 +59,23 @@ class Showroom(Mesh3D):
             super().on_key(event)
             item = self.menu.get_selected()
             self.current = -1
-            self.saved_versions = persist.get_versions(item.labelstr)
+            problem_hash = build.hash_of_problem(item.problem())
+            self.solutions = persist.get_solutions(problem_hash)
             self.fig.suptitle(
-                'No Solutions yet' if len(self.saved_versions) == 0 else
-                f'{len(self.saved_versions)} Solutions stored'
+                'No Solutions yet' if len(self.solutions) == 0 else
+                f'{len(self.solutions)} Solutions stored'
             )
             self.fig.canvas.draw()
         elif event.key in 'kj':
             # Bewegung in den Lösungen zu einem Problem
-            if len(self.saved_versions) == 0:
+            if len(self.solutions) == 0:
                 return
             incr = 1 if event.key == 'j' else -1
-            self.current = (self.current + incr) % len(self.saved_versions)
+            self.current = (self.current + incr) % len(self.solutions)
             self.fig.suptitle(
-                f'{self.current+1} from {len(self.saved_versions)}'
+                f'{self.current+1} from {len(self.solutions)}'
             )
-            _, current_space = self.saved_versions[self.current]
+            _, current_space = self.solutions[self.current]
             self.refresh(current_space)
             self.plot.refresh(current_space).plot()
         elif event.key == 't':
@@ -86,10 +88,10 @@ class Showroom(Mesh3D):
             # nach save noch refresh von self.spaces
             super().on_key(event)
             item = self.menu.get_selected()
-            self.saved_versions = persist.get_versions(item.labelstr)
+            self.solutions = persist.get_solutions(item.labelstr)
 
             self.fig.suptitle(
-                f'{len(self.saved_versions)} Solutions stored'
+                f'{len(self.solutions)} Solutions stored'
             )
 
         elif event.key == 'd':
@@ -102,7 +104,7 @@ class Showroom(Mesh3D):
     def delete_solution(self):
         ' Löscht Solution oder User Problem '
         try:
-            version_key, _ = self.saved_versions[self.current]
+            version_key, _ = self.solutions[self.current]
         except IndexError: # Delete problem
             item = self.menu.get_selected()
             _ = persist.pop(item.problem_str)
@@ -115,7 +117,7 @@ class Showroom(Mesh3D):
                 self.put('Only user problems can be deleted')
         else: # Delete version
             _ = persist.pop(version_key)
-            self.saved_versions.pop(self.current)
+            self.solutions.pop(self.current)
             self.put(f'removed {version_key}')
 
     def start_editview(self):
