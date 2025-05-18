@@ -1,0 +1,8 @@
+# pyproject.toml
+[build-system]
+requires = ["setuptools >= 42.0.0", 
+        'matplotlib',
+        'numpy',
+        'scikit-image',
+]
+build-backend = "setuptools.build_meta"
